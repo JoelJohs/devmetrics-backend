@@ -1,12 +1,13 @@
 import pytest
 import pytest_asyncio
-from httpx import AsyncClient
+from httpx import ASGITransport, AsyncClient
 from app.main import app
 
 
 @pytest_asyncio.fixture
 async def async_client():
-    async with AsyncClient(app=app, base_url="http://test") as client:
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as client:
         yield client
 
 
@@ -14,4 +15,6 @@ async def async_client():
 async def test_root(async_client: AsyncClient):
     response = await async_client.get("/")
     assert response.status_code == 200
-    assert response.json() == {"message": "Welcome to DevMetrics API"}
+    json = response.json()
+    assert json["message"] == "Welcome to the DevMetrics API"
+    assert json.get("ok") is True
