@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 from pathlib import Path
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, Response
+from .routers import ping_router
 
 base_dir = Path(__file__).resolve().parent
 static_dir = base_dir / "static"
@@ -15,6 +16,7 @@ load_dotenv()
 
 app = FastAPI(title="DevMetrics API", version="1.0.0")
 app.mount("/static", StaticFiles(directory=static_dir), name="static")
+app.include_router(ping_router.router, prefix="/api")
 
 
 @app.get("/")

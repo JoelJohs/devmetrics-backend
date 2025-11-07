@@ -18,3 +18,9 @@ async def test_root(async_client: AsyncClient):
     json = response.json()
     assert json["message"] == "Welcome to the DevMetrics API"
     assert json.get("ok") is True
+
+
+@pytest.mark.asyncio
+async def test_favicon_exists(async_client: AsyncClient): 
+    response = await async_client.get("/favicon.ico")
+    assert response.status_code == 200
