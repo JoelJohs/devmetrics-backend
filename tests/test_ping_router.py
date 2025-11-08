@@ -13,6 +13,6 @@ async def async_client():
 
 @pytest.mark.asyncio
 async def test_ping(async_client: AsyncClient):
-    response = await async_client.get("/api/ping")
+    response = await async_client.get("/api/v1/ping")
     assert response.status_code == 200
     assert response.json() == {"ping": "pong"}

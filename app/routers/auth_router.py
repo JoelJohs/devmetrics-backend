@@ -9,7 +9,7 @@ from ..db import get_db
 router = APIRouter()
 
 # Endpoint para registrar un nuevo usuario en la aplicacion
-@router.post("/singup", response_model=schemas.User, status_code=status.HTTP_201_CREATED)
+@router.post("/signup", response_model=schemas.UserOut, status_code=status.HTTP_201_CREATED)
 def signup(user: schemas.UserCreate, db: Session = Depends(get_db)):
     """
     Se recibe un JSON con email, password y los campos opcionales.
