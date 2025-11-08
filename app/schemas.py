@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, ConfigDict, EmailStr
 from datetime import datetime
 from typing import Optional
 
@@ -35,8 +35,7 @@ class UserOut(BaseModel):
     created_at: datetime
     updated_at: datetime
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 # -----------------------------
@@ -64,8 +63,7 @@ class ProjectOut(ProjectBase):
     created_at: datetime
     updated_at: datetime
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 # -----------------------------
@@ -93,5 +91,13 @@ class TimeEntryOut(TimeEntryBase):
     created_at: datetime
     updated_at: datetime
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
+
+# -----------------------------
+# Esquemas de autenticacion
+# -----------------------------
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+    

@@ -1,10 +1,8 @@
 from sqlalchemy.orm import Session
 from datetime import datetime, timezone
 
-import models
-import schemas
-
 from .security import get_password_hash
+from . import models, schemas
 
 # Operaciones CRUD para User
 
