@@ -16,8 +16,8 @@ load_dotenv()
 app = FastAPI(title="DevMetrics API", version="1.0.0", description="API for DevMetrics application")
 app.mount("/static", StaticFiles(directory=static_dir), name="static")
 
-app.include_router(ping_router.router, prefix="/api", tags=["ping"])
-app.include_router(auth_router.router, prefix="/api/auth", tags=["auth"])
+app.include_router(ping_router.router, prefix="/api/v1", tags=["ping"])
+app.include_router(auth_router.router, prefix="/api/v1/auth", tags=["auth"])
 
 
 @app.get("/", tags=["root"])
@@ -37,9 +37,11 @@ async def favicon():
 if __name__ == "__main__":
     env = os.getenv("ENV", "development")
 
+    app_str = "app.main:app"
+
     if env == "production":
         port = int(os.getenv("PORT", 8000))
-        uvicorn.run("main:app", host="0.0.0.0", port=port)
+        uvicorn.run(app_str, host="0.0.0.0", port=port)
 
     else:
-        uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+        uvicorn.run(app_str, host="0.0.0.0", port=8000, reload=True)
