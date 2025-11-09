@@ -48,16 +48,14 @@ class ProjectBase(BaseModel):
 
 
 class ProjectCreate(ProjectBase):
-    owner_id: int
+    pass
 
 
 class ProjectUpdate(BaseModel):
     name: Optional[str] = None
     description: Optional[str] = None
-    owner_id: Optional[int] = None
 
-
-class ProjectOut(ProjectBase):
+class ProjectRead(ProjectBase):
     id: int
     owner_id: int
     created_at: datetime
@@ -100,4 +98,5 @@ class Token(BaseModel):
     access_token: str
     token_type: str
 
-    
+class TokenData(BaseModel):
+    username: Optional[str] = None
