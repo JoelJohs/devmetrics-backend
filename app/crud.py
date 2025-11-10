@@ -106,3 +106,53 @@ def delete_project(db: Session, db_project: models.Project):
     return db_project
 
 # -----------------------------
+# Operaciones CRUD para Time Entry
+# -----------------------------
+
+def get_active_time_entry_by_user(db: Session, user_id: int):
+    """
+    Busca entrada de tiempo activa para el usuario.
+    """
+    return db.query(models.TimeEntry).filter(models.TimeEntry.user_id == user_id).filter(models.TimeEntry.end_time == None).first()
+
+def start_time_entry(db: Session, project_id: int, user_id: int):
+    """
+    Inicia nueva entrada de tieempo.
+    Se asume que no hay una entrada activa existente.
+    """
+    project = db.query(models.Project).filter(models.Project.id == project_id).filter(models.Project.owner_id == user_id).first()
+
+    if not project:
+        return None
+    
+    db_time_entry = models.TimeEntry(
+        start_time=datetime.now(timezone.utc),
+        user_id=user_id,
+        project_id=project_id,
+        created_at=datetime.now(timezone.utc),
+        updated_at=datetime.now(timezone.utc),
+    )
+
+    db.add(db_time_entry)
+    db.commit()
+    db.refresh(db_time_entry)
+    return db_time_entry
+
+def stop_time_entry(db: Session, db_time_entry: models.TimeEntry):
+    """
+    Detiene una entrada de tiempo activa y actualiza end_time.
+    """
+    db_time_entry.end_time = datetime.now(timezone.utc)
+    db_time_entry.updated_at = datetime.now(timezone.utc)
+
+    db.add(db_time_entry)
+    db.commit()
+    db.refresh(db_time_entry)
+
+    return db_time_entry
+
+def get_time_entries_by_user(db: Session, user_id: int, skip: int = 0, limit: int = 100):
+    """
+    Obtiene todas las entradas de tiempo del usuario especifico
+    """
+    return db.query(models.TimeEntry).filter(models.TimeEntry.user_id == user_id).order_by(models.TimeEntry.start_time.desc()).offset(skip).limit(limit).all()
