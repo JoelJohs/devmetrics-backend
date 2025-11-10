@@ -67,6 +67,8 @@ class ProjectRead(ProjectBase):
 # -----------------------------
 # Esquemas de time entry
 # -----------------------------
+class TimeEntryStart(BaseModel):
+    project_id: int
 
 class TimeEntryBase(BaseModel):
     start_time: datetime
@@ -89,6 +91,19 @@ class TimeEntryOut(TimeEntryBase):
     created_at: datetime
     updated_at: datetime
 
+    model_config = ConfigDict(from_attributes=True)
+
+class TimeEntryRead(BaseModel):
+    id: int
+    project_id: int
+    user_id: int
+    description: str | None = None
+    start_time: datetime
+    end_time: datetime | None = None
+    duration: int | None = None
+    created_at: datetime
+    updated_at: datetime
+    
     model_config = ConfigDict(from_attributes=True)
 
 # -----------------------------
