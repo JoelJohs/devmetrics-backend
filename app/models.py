@@ -1,3 +1,4 @@
+from datetime import datetime, timezone
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 from .db import Base
@@ -45,3 +46,25 @@ class TimeEntry(Base):
 
     user = relationship("User", back_populates="time_entries")
     project = relationship("Project", back_populates="time_entries")
+
+class GitEvent(Base):
+    __tablename__ = "git_events"
+
+    id = Column(Integer, primary_key=True, index=True)
+    
+    # Columnas de contexto de git
+    branch_name = Column(String, index=True)
+    commit_hash = Column(String, index=True, nullable=True)
+    commit_message = Column(String, nullable=True)
+
+    event_time = Column(DateTime, nullable=False, default = datetime.now(timezone.utc))
+    
+    # Relaciones
+    owner_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    owner = relationship("User")
+
+    project_id = Column(Integer, ForeignKey("projects.id"), nullable=False)
+    project = relationship("Project")
+
+    time_entry_id = Column(Integer, ForeignKey("time_entries.id"), nullable=True)
+    time_entry = relationship("TimeEntry")

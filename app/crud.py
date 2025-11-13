@@ -156,3 +156,31 @@ def get_time_entries_by_user(db: Session, user_id: int, skip: int = 0, limit: in
     Obtiene todas las entradas de tiempo del usuario especifico
     """
     return db.query(models.TimeEntry).filter(models.TimeEntry.user_id == user_id).order_by(models.TimeEntry.start_time.desc()).offset(skip).limit(limit).all()
+
+# -----------------------------
+# Operaciones CRUD para eventos Git
+# -----------------------------
+
+def create_git_event(db: Session, event_in: schemas.GitEventCreate, owner_id: int):
+    """
+    Crea un nuevo evento git y su contexto.
+    """
+    active_entry = get_active_time_entry_by_user(db, user_id = owner_id)
+    active_time_entry_id = active_entry.id if active_entry else None
+
+    project = db.query(models.Project).filter(models.Project.id == event_in.project_id).filter(models.Project.owner_id == owner_id).first()
+    if not project:
+        return None
+    
+    db_event = models.GitEvent(**event_in.model_dump(), owner_id=owner_id, event_time=datetime.now(timezone.utc), time_entry_id=active_time_entry_id)
+    db.add(db_event)
+    db.commit()
+    db.refresh(db_event)
+
+    return db_event
+
+def get_git_events_by_user(db: Session, owner_id: int, skip: int = 0, limit: int = 100):
+    """
+    Obtiene todos los eventos git del usuario.
+    """
+    return db.query(models.GitEvent).filter(models.GitEvent.owner_id == owner_id).order_by(models.GitEvent.event_time.desc()).offset(skip).limit(limit).all()

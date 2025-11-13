@@ -107,6 +107,28 @@ class TimeEntryRead(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 # -----------------------------
+# Esquemas de eventos git
+# -----------------------------
+class GitEventCreate(BaseModel):
+    project_id: int
+    branch_name: str
+    commit_hash: Optional[str] = None
+    commit_message: Optional[str] = None
+
+class GitEventRead(BaseModel):
+    id: int
+    branch_name: str
+    commit_hash: Optional[str] = None
+    commit_message: Optional[str] = None
+    event_time: datetime
+    # Las relaciones
+    owner_id: int
+    project_id: int
+    time_entry_id: Optional[int] = None 
+
+    model_config = ConfigDict(from_attributes=True)
+
+# -----------------------------
 # Esquemas de autenticacion
 # -----------------------------
 class Token(BaseModel):
