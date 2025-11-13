@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 from pathlib import Path
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, Response
-from .routers import ping_router, auth_router, project_router, time_entry_router
+from .routers import ping_router, auth_router, project_router, time_entry_router, git_event_router
 base_dir = Path(__file__).resolve().parent
 static_dir = base_dir / "static"
 
@@ -40,6 +40,7 @@ app.include_router(ping_router.router, prefix="/api/v1", tags=["ping"])
 app.include_router(auth_router.router, prefix="/api/v1/auth", tags=["auth"])
 app.include_router(project_router.router, prefix="/api/v1/projects", tags=["projects"])
 app.include_router(time_entry_router.router, prefix="/api/v1/time-entries", tags=["time-entries"])
+app.include_router(git_event_router.router, prefix="/api/v1/git-events", tags=["git-events"])
 
 
 
