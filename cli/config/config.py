@@ -1,0 +1,44 @@
+import json
+import os
+import sys
+from pathlib import Path
+from dotenv import load_dotenv
+
+load_dotenv()
+
+# ---------- Declaración de constantes ----------
+
+CONFIG_DIR = Path.home() / ".devm"
+CONFIG_FILE = CONFIG_DIR / "config.json"
+DEFAULT_API_URL = os.getenv("API_URL", "http://127.0.0.1:8000/api/v1")
+
+
+# ---------- Funciones de configuración ----------
+def ensure_config_dir_exists():
+    """
+    Comprueba que exista el directorio de configuración
+    """
+    try:
+        CONFIG_DIR.mkdir(parents=True, exist_ok=True)
+    except Exception as e:
+        print(f"Error: No se pudo crear el directorio de configuración en {CONFIG_DIR}", file=sys.stderr)
+        sys.exit(1)
+
+def save_token(token: str):
+    """
+    Guarda el token en config para las solicitudes
+    """
+    ensure_config_dir_exists()
+    config_data = {"token": token, "api_url": DEFAULT_API_URL}
+
+    try:
+        with open(CONFIG_FILE, "w") as f:
+            json.dump(config_data, f, indent=4)
+
+        # Permisos de solo lectura y escritura para el usuario
+        CONFIG_FILE.chmod(0o600)
+        print(f"Token guardado: {CONFIG_FILE}")
+
+    except IOError as e:
+        print(f"Error: No se pudo guardar el token en {CONFIG_FILE}", file=sys.stderr)
+        sys.exit(1) 
