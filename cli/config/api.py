@@ -45,3 +45,44 @@ def api_login(username: str, password: str) -> str | None:
     except requests.exceptions.RequestException as e:
         print(f"Ocurrió un error inesperado: {e}", file=sys.stderr)
         return None
+    
+def post_git_event(token: str, project_id: int, branch: str, commit_hash: str, message: str):
+    """
+    Envía el contexto de git al backend.
+    """
+    url = f"{API_URL_BASE}/git-events/"
+
+    headers = {
+        "Authorization": f"Bearer {token}",
+        "Content-Type": "application/json"
+    }
+
+    payload = {
+        "project_id": project_id,
+        "branch": branch,
+        "commit_hash": commit_hash,
+        "message": message
+    }
+
+    try:
+        response = requests.post(
+            url,
+            json=payload,
+            headers=headers,
+            timeout=10
+        )
+        response.raise_for_status()
+        print("✅ Evento de git enviado con éxito.")
+        return response.json()
+
+    except requests.exceptions.HTTPError as e:
+        if e.response.status_code == 401:
+            print("❌ Error: Token expirado o inválido. Por favor, ejecuta 'devm auth' de nuevo.", file=sys.stderr)
+        elif e.response.status_code == 404:
+            print(f"❌ Error: El proyecto ID {project_id} no existe o no tienes permiso.", file=sys.stderr)
+        else:
+            print(f"❌ Error de API: {e.response.status_code} - {e.response.text}", file=sys.stderr)
+        return None
+    except Exception as e:
+        print(f"❌ Ocurrió un error al enviar datos: {e}", file=sys.stderr)
+        return None

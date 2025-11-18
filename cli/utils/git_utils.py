@@ -39,3 +39,83 @@ def run(args):
         print("Intenta correr 'git init' primero si esto es un proyecto nuevo.", file=sys.stderr)
         print()
         sys.exit(1)
+
+def get_repo_root(): 
+    """
+    Retorna la ruta raíz del repositorio git actual
+    """
+    try:
+        result = subprocess.run(
+            ["git", "rev-parse", "--show-toplevel"],
+            check=True,
+            capture_output=True,
+            text=True
+        )
+        return result.stdout.strip()
+    except subprocess.CalledProcessError:
+        print("❌ Error: No se pudo determinar la raíz del repositorio Git.", file=sys.stderr)
+        sys.exit(1)
+
+def get_current_branch():
+    """
+    Retorna el nombre de la rama actual del repositorio git
+    """
+    try:
+        result = subprocess.run(
+            ["git", "rev-parse", "--abbrev-ref", "HEAD"],
+            check=True,
+            capture_output=True,
+            text=True
+        )
+        return result.stdout.strip()
+    except subprocess.CalledProcessError:
+        print("❌ Error: No se pudo determinar la rama actual del repositorio Git.", file=sys.stderr)
+        sys.exit(1)
+
+def get_latest_commit_hash():
+    """
+    Retorna el hash del último commit en la rama actual
+    """
+    try:
+        result = subprocess.run(
+            ["git", "rev-parse", "HEAD"],
+            check=True,
+            capture_output=True,
+            text=True
+        )
+        return result.stdout.strip()
+    except subprocess.CalledProcessError:
+        print("❌ Error: No se pudo obtener el hash del último commit.", file=sys.stderr)
+        sys.exit(1)
+
+def get_git_config(key: str):
+    """
+    Retorna el valor de una clave de configuración git
+    """
+    try:
+        result = subprocess.run(
+            ["git", "config", "--get", key],
+            check=True,
+            capture_output=True,
+            text=True
+        )
+        return result.stdout.strip()
+    except subprocess.CalledProcessError:
+        print(f"❌ Error: No se pudo obtener la configuración git para la clave '{key}'.", file=sys.stderr)
+        return None
+    
+def get_latest_commit_message():
+    """
+    Retorna el mensaje del último commit en la rama actual
+    """
+    try:
+        result = subprocess.run(
+            ["git", "log", "-1", "--pretty=%B"],
+            check=True,
+            capture_output=True,
+            text=True
+        )
+        return result.stdout.strip()
+    except subprocess.CalledProcessError:
+        print("❌ Error: No se pudo obtener el mensaje del último commit.", file=sys.stderr)
+        sys.exit(1)
