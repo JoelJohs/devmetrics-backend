@@ -10,7 +10,7 @@ load_dotenv()
 
 CONFIG_DIR = Path.home() / ".devm"
 CONFIG_FILE = CONFIG_DIR / "config.json"
-DEFAULT_API_URL = os.getenv("API_URL", "http://127.0.0.1:8000/api/v1")
+API_URL_BASE = os.getenv("API_URL", "http://127.0.0.1:8000/api/v1")
 
 
 # ---------- Funciones de configuración ----------
@@ -29,7 +29,7 @@ def save_token(token: str):
     Guarda el token en config para las solicitudes
     """
     ensure_config_dir_exists()
-    config_data = {"token": token, "api_url": DEFAULT_API_URL}
+    config_data = {"token": token, "api_url": API_URL_BASE}
 
     try:
         with open(CONFIG_FILE, "w") as f:
