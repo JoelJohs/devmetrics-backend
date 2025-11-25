@@ -119,3 +119,7 @@ def get_latest_commit_message():
     except subprocess.CalledProcessError:
         print("❌ Error: No se pudo obtener el mensaje del último commit.", file=sys.stderr)
         sys.exit(1)
+
+def get_linked_project_id() -> str | None:
+    """Retorna el project_id guardado con `git config devmetrics.projectid`."""
+    return get_git_config("devmetrics.projectid")

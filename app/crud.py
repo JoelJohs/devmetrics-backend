@@ -21,6 +21,7 @@ def create_user(db: Session, user: schemas.UserCreate) -> models.User:
         username=user.username,
         full_name=user.full_name,
         hashed_password=hashed_password,
+        is_active=True,
 
         # Campos de auditoría para seguimiento de creación y actualización
         created_at=datetime.now(timezone.utc),
