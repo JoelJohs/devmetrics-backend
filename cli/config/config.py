@@ -42,3 +42,17 @@ def save_token(token: str):
     except IOError as e:
         print(f"Error: No se pudo guardar el token en {CONFIG_FILE}", file=sys.stderr)
         sys.exit(1) 
+
+def load_token() -> str | None:
+    """Carga el token guardado del archivo de configuración."""
+    if not CONFIG_FILE.exists():
+        return None
+
+    try:
+        with open(CONFIG_FILE, "r", encoding="utf-8") as f:
+            data = json.load(f)
+    except (IOError, json.JSONDecodeError) as exc:
+        print(f"Error leyendo la configuración: {exc}", file=sys.stderr)
+        return None
+
+    return data.get("token")

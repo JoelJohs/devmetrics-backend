@@ -59,9 +59,9 @@ def post_git_event(token: str, project_id: int, branch: str, commit_hash: str, m
 
     payload = {
         "project_id": project_id,
-        "branch": branch,
+        "branch_name": branch,
         "commit_hash": commit_hash,
-        "message": message
+        "commit_message": message,
     }
 
     try:
